@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" href="data:,">
+<style>
+body {
+  background: black;
+  margin: 0;
+  overflow: hidden;
+}
+
+#link-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+#image {
+  max-width: 100vw;
+  max-height: 100vh;
+  margin: auto;
+}
+
+#progress {
+  position: fixed;
+  top: 0;
+  color: white;
+  font-size: 4rem;
+}
+</style>
+</head>
+
+<body>
+  <a id="link-container" href="javascript:"><img id="image"></a>
+  <span id="progress" hidden></span>
+
+  <script>
+    const count = {{ .Count }};
+    const hash = {{ .Hash }};
+
+    const img = document.getElementById('image');
+    const progressSpan = document.getElementById('progress');
+
+    function imageUrl(index) {
+      return `${hash}/image/${index}/`;
+    }
+    function readIndexFromFragment() {
+      let idx = (window.location.hash || '#0').slice(1);
+      return Number(idx);
+    }
+    function setFragment(idx) {
+      const progress = (idx / count * 100).toFixed(1);
+      window.location.hash = `#${idx}`;
+      progressSpan.innerHTML = `${idx}: ${progress}%`;
+    }
+    function setZoom(zoom) {
+      img.style = `transform: scale(${zoom})`;
+    }
+
+    let index = readIndexFromFragment() % count;
+
+    img.src = imageUrl(index);
+
+    const linkContainer = document.getElementById('link-container');
+    linkContainer.onclick = () => {
+      index = (index + 1) % count;
+      setFragment(index);
+    };
+
+    let zoom = 1.0;
+
+    document.onkeydown = (e) => {
+      if (e.key == 'ArrowLeft') {
+        index = (index + 1) % count;
+        setFragment(index);
+      } else if (e.key == 'ArrowRight') {
+        index = index > 0 ? index - 1 : count - 1;
+        setFragment(index);
+      } else if (e.key == 'ArrowUp') {
+        zoom += 0.01;
+        setZoom(zoom);
+      } else if (e.key == 'ArrowDown') {
+        zoom -= 0.01;
+        setZoom(zoom);
+      } else if (e.key == 'e') {
+        progressSpan.hidden = !progressSpan.hidden;
+      }
+    };
+
+    window.onhashchange = () => {
+      index = readIndexFromFragment() % count;
+      img.src = imageUrl(index);
+      setFragment(index);
+    };
+  </script>
+</body>
+</html>
