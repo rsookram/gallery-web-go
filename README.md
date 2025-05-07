@@ -22,11 +22,16 @@ go install .
 
 ```
 USAGE:
-    gallery-web [DIR]
+    gallery-web [DIR] [OPTIONS]
+
+Start a server for the specified directory (defaulting to the current
+directory).
+
+OPTIONS:
+    -port <port>  The port to serve on [default: 4255]
 ```
 
-This will start a server running on port 4255. Open `http://localhost:4255/` in
-a browser to view the images.
+Open `http://localhost:4255/` in a browser to view the images.
 
 ## Key bindings
 

@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"encoding/hex"
 	"flag"
+	"fmt"
 	"html/template"
 	"io/fs"
 	"log/slog"
@@ -23,13 +24,15 @@ type DirectoryMetadata struct {
 }
 
 func main() {
+	port := flag.Uint("port", 4255, "the port to serve on")
 	flag.Parse()
+
 	dir := flag.Arg(0)
 	if dir == "" {
 		dir = "."
 	}
 
-	addr := "127.0.0.1:4255"
+	addr := fmt.Sprintf("127.0.0.1:%d", *port)
 	slog.Info("starting", "addr", addr, "dir", dir)
 
 	images, err := loadImages(dir)
